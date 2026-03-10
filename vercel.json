@@ -2,21 +2,16 @@
   "version": 2,
   "builds": [
     {
-      "src": "app/main.py",
+      "src": "backend/app/main.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "app/main.py"
-    },
-    {
       "src": "/(.*)",
-      "dest": "app/static/$1"
+      "dest": "backend/app/main.py"
     }
   ],
-  "outputDirectory": "app/static",
   "env": {
     "PYTHON_VERSION": "3.9"
   }
