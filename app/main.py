@@ -12,7 +12,7 @@ from app.api import events, intelligence, reports
 
 app = FastAPI(
     title="WorldWatch 天眼",
-    description="全球情报监控系统",
+    description="全球动态监控系统",
     version="1.0.0"
 )
 
