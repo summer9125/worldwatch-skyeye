@@ -11,20 +11,50 @@
 
 ## 🌐 优质设计资源网站
 
-### 设计灵感
+### 🎨 设计灵感 - 国内平台
+
+| 网站 | 说明 | 链接 |
+|------|------|------|
+| **花瓣网** | 中国版 Pinterest，设计素材收集 | huaban.com |
+| **站酷 (Zcool)** | 国内设计师作品展示平台 | zcool.com.cn |
+| **UI 中国** | UI 设计师专业平台 | ui.cn |
+| **古田路 9 号** | 品牌设计创意平台 | gtn9.com |
+| **致设计** | 电商设计交流平台 | zhisheji.com |
+| **设计癖** | 设计产品资讯平台 | shejipi.com |
+| **优设网** | 设计师学习平台 | youshe.net |
+| **68Design** | 设计师作品展示 | 68design.net |
+| **视觉中国** | 专业图片/视频素材 | vcg.com |
+| **摄图网** | 图片/视频/音乐素材 | 699pic.com |
+| **千图网** | 免费设计素材 | 588ku.com |
+| **包图网** | 商用设计素材 | ibaotu.com |
+| **千库网** | PNG 免抠素材 | 588ku.com |
+| **觅元素** | 免抠图素材 | 51yuansu.com |
+| **爱给网** | 游戏/视频素材 | aigei.com |
+
+### 🌍 设计灵感 - 国外平台
 
 | 网站 | 说明 | 链接 |
 |------|------|------|
 | **Dribbble** | 全球设计师作品展示 | dribbble.com |
 | **Behance** | Adobe 旗下设计平台 | behance.net |
+| **Pinterest** | 图片收集与灵感 | pinterest.com |
 | **Awwwards** | 网页设计奖项与灵感 | awwwards.com |
 | **Site Inspire** | 优秀网页设计集合 | siteinspire.com |
 | **Godly** | 顶级网站设计 | godly.website |
 | **Land-book** | Landing Page 灵感 | land-book.com |
 | **Page Flows** | 用户流程设计 | pageflows.com |
-| **Mobbin** | 移动端 UI 模式 | mobbin.com |
+| **Mobbin** | 移动端 UI 模式库 | mobbin.com |
 | **Screenlane** | 移动端设计灵感 | screenlane.com |
 | **Really Good UX** | 优秀 UX 案例 | reallygoodux.io |
+| **One Page Love** | 单页网站灵感 | onepagelove.com |
+| **Httpster** | 创意网站展示 | httpster.net |
+| **Lapa Ninja** | Landing Page 集合 | lapa.ninja |
+| **Collect UI** | 每日 UI 灵感 | collectui.com |
+| **UI Garage** | UI 模式库 | uigarage.net |
+| **Saas Pages** | SaaS 页面灵感 | saaspages.xyz |
+| **Page Flows** | 用户流程视频 | pageflows.com |
+| **UX Archive** | UX 流程案例 | uxarchive.com |
+| **Nicely Done** | 优秀产品设计 | nicelydone.club |
 
 ### 数据可视化
 
