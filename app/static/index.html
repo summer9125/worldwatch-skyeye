@@ -2,176 +2,146 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WorldWatch 天眼 - 全球动态监控指挥中心</title>
-    <!-- 使用国内可访问的 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
             background: linear-gradient(135deg, #0c1929 0%, #1a2a4a 100%);
             color: #e0e6ed;
             min-height: 100vh;
+            -webkit-text-size-adjust: 100%;
         }
         .header {
-            background: rgba(12, 25, 41, 0.95);
+            background: rgba(12, 25, 41, 0.98);
             border-bottom: 1px solid #1e3a5f;
-            padding: 0 20px;
+            padding: 0 16px;
             position: fixed;
             top: 0; left: 0; right: 0;
             z-index: 1000;
-            height: 60px;
+            height: 56px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
         }
-        .logo { display: flex; align-items: center; gap: 12px; }
-        .logo-icon { font-size: 28px; }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { font-size: 24px; }
         .logo-text {
-            font-size: 20px; font-weight: bold;
+            font-size: 18px; font-weight: 700;
             background: linear-gradient(90deg, #00d9ff, #00ff88);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .header-controls { display: flex; align-items: center; gap: 20px; }
+        .header-controls { display: flex; align-items: center; gap: 12px; }
         .status-badge {
-            display: flex; align-items: center; gap: 8px;
-            padding: 6px 12px;
+            display: flex; align-items: center; gap: 6px;
+            padding: 4px 10px;
             background: rgba(0, 255, 136, 0.1);
             border: 1px solid #00ff88;
-            border-radius: 20px;
-            font-size: 12px;
+            border-radius: 16px;
+            font-size: 11px;
         }
         .status-dot {
-            width: 8px; height: 8px;
+            width: 6px; height: 6px;
             background: #00ff88;
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .lang-select {
-            background: rgba(30, 58, 95, 0.5);
-            border: 1px solid #1e3a5f;
-            color: #e0e6ed;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-        .time-display { font-family: 'Courier New', monospace; font-size: 14px; color: #00d9ff; }
+        .time-display { font-family: 'Courier New', monospace; font-size: 13px; color: #00d9ff; }
         
         .main-container {
             display: grid;
-            grid-template-columns: 260px 1fr 300px;
-            gap: 20px;
-            padding: 80px 20px 20px;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            padding: 72px 16px 16px;
             min-height: 100vh;
         }
         
         .panel {
-            background: rgba(18, 32, 53, 0.8);
+            background: rgba(18, 32, 53, 0.9);
             border: 1px solid #1e3a5f;
             border-radius: 12px;
             overflow: hidden;
-            margin-bottom: 20px;
         }
         .panel-header {
-            background: linear-gradient(90deg, rgba(30, 58, 95, 0.8), rgba(18, 32, 53, 0.8));
+            background: linear-gradient(90deg, rgba(30, 58, 95, 0.9), rgba(18, 32, 53, 0.9));
             padding: 12px 16px;
             border-bottom: 1px solid #1e3a5f;
-            font-size: 14px; font-weight: 600;
-            display: flex; justify-content: space-between; align-items: center;
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .panel-content { padding: 16px; }
-        
-        .left-panel, .right-panel { display: flex; flex-direction: column; }
         
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 12px;
         }
         .stats-card {
-            background: linear-gradient(135deg, rgba(30, 58, 95, 0.5), rgba(18, 32, 53, 0.5));
+            background: linear-gradient(135deg, rgba(30, 58, 95, 0.6), rgba(18, 32, 53, 0.6));
             border-radius: 10px;
-            padding: 20px;
+            padding: 16px 12px;
             text-align: center;
         }
         .stat-value {
-            font-size: 36px; font-weight: bold;
+            font-size: 28px; font-weight: 700;
             background: linear-gradient(90deg, #00d9ff, #00ff88);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .stat-label { font-size: 12px; color: #8899ac; margin-top: 6px; }
+        .stat-label { font-size: 11px; color: #8899ac; margin-top: 6px; }
         
-        .region-list { max-height: 350px; overflow-y: auto; }
+        .region-list { max-height: 250px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .region-item {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 12px;
+            padding: 12px 14px;
             border-bottom: 1px solid rgba(30, 58, 95, 0.5);
-            cursor: pointer;
         }
-        .region-item:hover { background: rgba(30, 58, 95, 0.3); }
-        .region-name { display: flex; align-items: center; gap: 8px; }
-        .region-flag { font-size: 16px; }
+        .region-item:last-child { border-bottom: none; }
+        .region-name { display: flex; align-items: center; gap: 10px; }
+        .region-flag { font-size: 18px; }
         .region-count {
             background: rgba(0, 217, 255, 0.2);
             color: #00d9ff;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 12px;
-        }
-        
-        .center-panel { display: flex; flex-direction: column; gap: 20px; }
-        
-        .map-container {
-            height: 450px;
-            background: rgba(18, 32, 53, 0.5);
+            padding: 3px 10px;
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            font-size: 12px;
+            font-weight: 600;
         }
-        #worldMap { width: 100%; height: 100%; }
-        .map-placeholder {
-            text-align: center;
-            color: #8899ac;
-        }
-        .map-placeholder .icon { font-size: 64px; margin-bottom: 16px; }
         
-        .events-feed { max-height: 400px; overflow-y: auto; }
+        .events-feed { max-height: 400px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .event-item {
-            background: rgba(30, 58, 95, 0.3);
+            background: rgba(30, 58, 95, 0.4);
             border-left: 3px solid #00d9ff;
             padding: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             border-radius: 0 8px 8px 0;
-            cursor: pointer;
-            transition: all 0.2s;
         }
-        .event-item:hover {
-            background: rgba(30, 58, 95, 0.5);
-            transform: translateX(5px);
-        }
+        .event-item:last-child { margin-bottom: 0; }
         .event-item.critical { border-left-color: #ff4757; }
         .event-item.high { border-left-color: #ffa502; }
         .event-item.medium { border-left-color: #ffdd59; }
         .event-item.low { border-left-color: #00d9ff; }
-        .event-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
-        .event-meta { display: flex; gap: 12px; font-size: 11px; color: #8899ac; flex-wrap: wrap; }
+        .event-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; line-height: 1.5; }
+        .event-meta { display: flex; gap: 10px; font-size: 11px; color: #8899ac; flex-wrap: wrap; }
         .event-source { color: #00d9ff; }
         
         .category-list { }
         .category-item {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 12px;
+            padding: 12px 14px;
             border-bottom: 1px solid rgba(30, 58, 95, 0.5);
         }
-        .category-name { display: flex; align-items: center; gap: 8px; }
-        .category-icon { font-size: 16px; }
+        .category-item:last-child { border-bottom: none; }
+        .category-name { display: flex; align-items: center; gap: 10px; }
+        .category-icon { font-size: 18px; }
         .category-bar {
             flex: 1;
             height: 6px;
@@ -185,43 +155,44 @@
             background: linear-gradient(90deg, #00d9ff, #00ff88);
             border-radius: 3px;
         }
-        .category-count { font-size: 12px; color: #00d9ff; min-width: 30px; text-align: right; }
+        .category-count { font-size: 12px; color: #00d9ff; min-width: 30px; text-align: right; font-weight: 600; }
         
-        .alert-list { max-height: 300px; overflow-y: auto; }
+        .alert-list { max-height: 250px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .alert-item {
             display: flex; align-items: flex-start; gap: 10px;
-            padding: 10px;
+            padding: 12px;
             background: rgba(255, 71, 87, 0.1);
             border: 1px solid rgba(255, 71, 87, 0.3);
             border-radius: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
-        .alert-icon { font-size: 18px; }
-        .alert-content { flex: 1; }
-        .alert-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+        .alert-item:last-child { margin-bottom: 0; }
+        .alert-icon { font-size: 20px; }
+        .alert-content { flex: 1; min-width: 0; }
+        .alert-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .alert-time { font-size: 10px; color: #8899ac; }
         
-        .data-sources { font-size: 12px; color: #8899ac; line-height: 2; }
+        .data-sources { font-size: 13px; color: #8899ac; line-height: 2.2; }
         
         .refresh-btn {
             background: rgba(0,217,255,0.2);
             border: 1px solid #00d9ff;
             color: #00d9ff;
-            padding: 6px 16px;
+            padding: 6px 14px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
-            transition: all 0.2s;
+            font-weight: 500;
         }
-        .refresh-btn:hover { background: rgba(0,217,255,0.3); }
+        .refresh-btn:active { background: rgba(0,217,255,0.3); }
         
         .loading {
             display: flex; align-items: center; justify-content: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
             color: #8899ac;
         }
         .spinner {
-            width: 32px; height: 32px;
+            width: 28px; height: 28px;
             border: 3px solid rgba(0, 217, 255, 0.2);
             border-top-color: #00d9ff;
             border-radius: 50%;
@@ -230,23 +201,39 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(18, 32, 53, 0.5); }
-        ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 3px; }
-        
         .update-time {
             text-align: center;
             font-size: 11px;
             color: #8899ac;
-            padding: 10px;
+            padding: 12px;
             border-top: 1px solid rgba(30, 58, 95, 0.5);
         }
         
-        @media (max-width: 1200px) {
+        .world-viz {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 16px;
+        }
+        .viz-item {
+            background: rgba(30, 58, 95, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .viz-icon { font-size: 24px; margin-bottom: 6px; }
+        .viz-label { font-size: 11px; color: #8899ac; }
+        .viz-value { font-size: 16px; font-weight: 600; color: #00d9ff; margin-top: 4px; }
+        
+        @media (min-width: 768px) {
             .main-container {
-                grid-template-columns: 1fr;
+                grid-template-columns: 280px 1fr 320px;
+                padding: 80px 24px 24px;
+                gap: 20px;
             }
-            .left-panel, .right-panel { display: none; }
+            .stats-grid { gap: 16px; }
+            .stats-card { padding: 20px 16px; }
+            .stat-value { font-size: 32px; }
         }
     </style>
 </head>
@@ -259,187 +246,147 @@
         <div class="header-controls">
             <div class="status-badge">
                 <span class="status-dot"></span>
-                <span>系统运行正常</span>
+                <span>运行正常</span>
             </div>
-            <select class="lang-select" id="langSelect">
-                <option value="zh-CN">简体中文</option>
-                <option value="zh-TW">繁體中文</option>
-                <option value="en">English</option>
-            </select>
-            <div class="time-display" id="timeDisplay">--:--:--</div>
+            <div class="time-display" id="timeDisplay">--:--</div>
         </div>
     </header>
 
     <div class="main-container">
-        <!-- 左侧 -->
-        <div class="left-panel">
-            <div class="panel">
-                <div class="panel-header">📊 统计概览</div>
-                <div class="panel-content">
-                    <div class="stats-grid">
-                        <div class="stats-card">
-                            <div class="stat-value" id="totalEvents">-</div>
-                            <div class="stat-label">总事件</div>
-                        </div>
-                        <div class="stats-card">
-                            <div class="stat-value" id="alertCount">-</div>
-                            <div class="stat-label">告警</div>
-                        </div>
-                        <div class="stats-card">
-                            <div class="stat-value" id="regionCount">-</div>
-                            <div class="stat-label">地区</div>
-                        </div>
+        <!-- 统计概览 -->
+        <div class="panel">
+            <div class="panel-header">📊 统计概览</div>
+            <div class="panel-content">
+                <div class="stats-grid">
+                    <div class="stats-card">
+                        <div class="stat-value" id="totalEvents">-</div>
+                        <div class="stat-label">总事件</div>
                     </div>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-header">🌏 地区分布</div>
-                <div class="panel-content">
-                    <div class="region-list" id="regionList">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                            <span>加载中...</span>
-                        </div>
+                    <div class="stats-card">
+                        <div class="stat-value" id="alertCount">-</div>
+                        <div class="stat-label">告警</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stat-value" id="regionCount">-</div>
+                        <div class="stat-label">地区</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 中间 -->
-        <div class="center-panel">
-            <div class="panel">
-                <div class="panel-header">
-                    <span>🗺️ 全球监控</span>
-                    <button class="refresh-btn" onclick="refreshData()">🔄 刷新</button>
-                </div>
-                <div class="panel-content">
-                    <div class="map-container">
-                        <div id="worldMap"></div>
-                        <div class="map-placeholder" id="mapPlaceholder">
-                            <div class="icon">🌐</div>
-                            <div>地图加载中...</div>
-                        </div>
-                    </div>
-                </div>
+        <!-- 全球监控 -->
+        <div class="panel">
+            <div class="panel-header">
+                <span>🌐 全球监控</span>
+                <button class="refresh-btn" onclick="loadData()">🔄 刷新</button>
             </div>
-
-            <div class="panel">
-                <div class="panel-header">🔥 实时事件流</div>
-                <div class="panel-content">
-                    <div class="events-feed" id="eventsFeed">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                            <span>正在加载全球动态...</span>
-                        </div>
+            <div class="panel-content">
+                <div class="world-viz">
+                    <div class="viz-item">
+                        <div class="viz-icon">🌏</div>
+                        <div class="viz-label">亚洲</div>
+                        <div class="viz-value" id="asiaCount">-</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-icon">🇺🇸</div>
+                        <div class="viz-label">北美</div>
+                        <div class="viz-value" id="naCount">-</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-icon">🇪🇺</div>
+                        <div class="viz-label">欧洲</div>
+                        <div class="viz-value" id="euCount">-</div>
+                    </div>
+                    <div class="viz-item">
+                        <div class="viz-icon">🌍</div>
+                        <div class="viz-label">其他</div>
+                        <div class="viz-value" id="otherCount">-</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 右侧 -->
-        <div class="right-panel">
-            <div class="panel">
-                <div class="panel-header">📈 事件分类</div>
-                <div class="panel-content">
-                    <div class="category-list" id="categoryList">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                        </div>
+        <!-- 实时事件流 -->
+        <div class="panel">
+            <div class="panel-header">🔥 实时事件流</div>
+            <div class="panel-content">
+                <div class="events-feed" id="eventsFeed">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <span>加载中...</span>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="panel">
-                <div class="panel-header">⚠️ 告警列表</div>
-                <div class="panel-content">
-                    <div class="alert-list" id="alertList">
-                        <div class="loading">
-                            <div class="spinner"></div>
-                        </div>
+        <!-- 地区分布 -->
+        <div class="panel">
+            <div class="panel-header">🌏 地区分布</div>
+            <div class="panel-content">
+                <div class="region-list" id="regionList">
+                    <div class="loading">
+                        <div class="spinner"></div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="panel">
-                <div class="panel-header">ℹ️ 数据源</div>
-                <div class="panel-content">
-                    <div class="data-sources">
-                        <div>📰 BBC World</div>
-                        <div>📰 CNN</div>
-                        <div>📰 Reuters</div>
-                        <div>📰 The Verge</div>
-                        <div>💬 Reddit</div>
-                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(30,58,95,0.5);">
-                            🕐 10 分钟更新
-                        </div>
+        <!-- 事件分类 -->
+        <div class="panel">
+            <div class="panel-header">📈 事件分类</div>
+            <div class="panel-content">
+                <div class="category-list" id="categoryList">
+                    <div class="loading">
+                        <div class="spinner"></div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="update-time" id="updateTime"></div>
+        <!-- 告警列表 -->
+        <div class="panel">
+            <div class="panel-header">⚠️ 告警列表</div>
+            <div class="panel-content">
+                <div class="alert-list" id="alertList">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据源 -->
+        <div class="panel">
+            <div class="panel-header">ℹ️ 数据源</div>
+            <div class="panel-content">
+                <div class="data-sources">
+                    <div>📰 36Kr</div>
+                    <div>📰 IT 之家</div>
+                    <div>📰 The Verge</div>
+                    <div>📰 TechCrunch</div>
+                    <div>💬 Reddit</div>
+                </div>
+                <div class="update-time" id="updateTime"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        let currentLang = 'zh-CN';
-        let worldMap = null;
         let dataCache = null;
 
-        // 时间更新
+        // 更新时间
         function updateTime() {
             const now = new Date();
-            document.getElementById('timeDisplay').textContent = now.toLocaleTimeString('zh-CN', {hour12: false});
+            document.getElementById('timeDisplay').textContent = now.toLocaleTimeString('zh-CN', {hour: '2-digit', minute:'2-digit', hour12: false});
         }
         setInterval(updateTime, 1000);
         updateTime();
 
-        // 初始化地图（简化版）
-        function initMap() {
-            try {
-                worldMap = echarts.init(document.getElementById('worldMap'));
-                const option = {
-                    backgroundColor: 'transparent',
-                    geo: {
-                        map: 'world',
-                        roam: true,
-                        zoom: 1.2,
-                        label: {show: false},
-                        itemStyle: {
-                            areaColor: '#1a2a4a',
-                            borderColor: '#2a4a6f',
-                            borderWidth: 1
-                        },
-                        emphasis: {itemStyle: {areaColor: '#2a4a6f'}}
-                    },
-                    series: [{
-                        type: 'scatter',
-                        coordinateSystem: 'geo',
-                        symbolSize: 8,
-                        itemStyle: {color: '#00d9ff'}
-                    }]
-                };
-                worldMap.setOption(option);
-                document.getElementById('mapPlaceholder').style.display = 'none';
-                
-                // 异步加载世界地图
-                fetch('https://cdn.jsdelivr.net/npm/echarts@5.4.3/map/json/world.json')
-                    .then(r => r.json())
-                    .then(worldJson => {
-                        echarts.registerMap('world', worldJson);
-                        worldMap.setOption(option);
-                        document.getElementById('mapPlaceholder').style.display = 'none';
-                    })
-                    .catch(() => {
-                        document.getElementById('mapPlaceholder').innerHTML = '<div class="icon">🌐</div><div>地图加载失败</div>';
-                    });
-            } catch(e) {
-                console.log('地图初始化失败', e);
-            }
-        }
-
         // 加载数据
         async function loadData() {
+            const feed = document.getElementById('eventsFeed');
+            feed.innerHTML = '<div class="loading"><div class="spinner"></div><span>加载中...</span></div>';
+            
             try {
                 const res = await fetch('/api/v1/events/list?limit=50');
                 const result = await res.json();
@@ -450,11 +397,11 @@
                 updateRegionList(result.data);
                 updateCategoryList(result.data);
                 updateAlertList(result.data);
-                updateMapMarkers(result.data);
+                updateWorldViz(result.data);
                 updateUpdateTime(result.last_update);
             } catch(error) {
                 console.error('加载失败:', error);
-                document.getElementById('eventsFeed').innerHTML = '<div class="loading">数据加载失败，请刷新重试</div>';
+                feed.innerHTML = '<div class="loading">加载失败，请刷新</div>';
             }
         }
 
@@ -464,6 +411,18 @@
             document.getElementById('totalEvents').textContent = events.length;
             document.getElementById('alertCount').textContent = alerts;
             document.getElementById('regionCount').textContent = regions.size;
+        }
+
+        function updateWorldViz(events) {
+            const counts = {亚洲:0, 北美:0, 欧洲:0, 其他:0};
+            events.forEach(e => {
+                if (counts[e.region] !== undefined) counts[e.region]++;
+                else counts.其他++;
+            });
+            document.getElementById('asiaCount').textContent = counts.亚洲;
+            document.getElementById('naCount').textContent = counts.北美;
+            document.getElementById('euCount').textContent = counts.欧洲;
+            document.getElementById('otherCount').textContent = counts.其他;
         }
 
         function updateEventsFeed(events) {
@@ -489,7 +448,7 @@
             events.forEach(e => { regionCount[e.region] = (regionCount[e.region] || 0) + 1; });
             const container = document.getElementById('regionList');
             const flags = {'全球':'🌍','北美':'🇺🇸','欧洲':'🇪','亚洲':'🌏','中东':'🕌','非洲':'🌍','南美':'🌎','大洋洲':'🌏'};
-            container.innerHTML = Object.entries(regionCount).map(([r, c]) => `
+            container.innerHTML = Object.entries(regionCount).sort((a,b) => b[1]-a[1]).map(([r, c]) => `
                 <div class="region-item">
                     <div class="region-name">
                         <span class="region-flag">${flags[r]||'🌐'}</span>
@@ -506,14 +465,14 @@
             const container = document.getElementById('categoryList');
             const icons = {'新闻':'📰','科技':'💻','经济':'💰','政治':'🏛️','环境':'🌍','科学':'🔬'};
             const max = Math.max(...Object.values(catCount), 1);
-            container.innerHTML = Object.entries(catCount).map(([c, n]) => `
+            container.innerHTML = Object.entries(catCount).sort((a,b) => b[1]-a[1]).map(([c, n]) => `
                 <div class="category-item">
                     <div class="category-name">
                         <span class="category-icon">${icons[c]||'📌'}</span>
                         <span>${escapeHtml(c)}</span>
                     </div>
                     <div class="category-bar">
-                        <div class="category-fill" style="width:${(n/max)*100}%"></div>
+                        <div class="category-fill" style="width:${Math.min(100, (n/max)*100)}%"></div>
                     </div>
                     <div class="category-count">${n}</div>
                 </div>
@@ -521,7 +480,7 @@
         }
 
         function updateAlertList(events) {
-            const alerts = events.filter(e => e.is_alert).slice(0, 5);
+            const alerts = events.filter(e => e.is_alert).slice(0, 8);
             const container = document.getElementById('alertList');
             if (alerts.length === 0) {
                 container.innerHTML = '<div class="loading" style="padding:20px;">暂无告警</div>';
@@ -538,35 +497,10 @@
             `).join('');
         }
 
-        function updateMapMarkers(events) {
-            if (!worldMap) return;
-            const coords = {'全球':[0,20],'北美':[-100,45],'欧洲':[10,50],'亚洲':[100,35],'中东':[50,30],'非洲':[20,0],'南美':[-60,-15],'大洋洲':[140,-25]};
-            const data = events.filter(e => coords[e.region]).map(e => ({
-                name: e.region,
-                value: [...coords[e.region], e.heat_score||50]
-            }));
-            worldMap.setOption({
-                series: [{
-                    type: 'effectScatter',
-                    coordinateSystem: 'geo',
-                    data: data,
-                    symbolSize: 12,
-                    rippleEffect: {brushType: 'stroke', scale: 2},
-                    itemStyle: {
-                        color: p => p.value[2] > 80 ? '#ff4757' : p.value[2] > 50 ? '#ffa502' : '#00d9ff'
-                    }
-                }]
-            });
-        }
-
         function updateUpdateTime(isoTime) {
             if (!isoTime) return;
             const date = new Date(isoTime);
-            document.getElementById('updateTime').textContent = '最后更新：' + date.toLocaleString('zh-CN');
-        }
-
-        function refreshData() {
-            loadData();
+            document.getElementById('updateTime').textContent = '最后更新：' + date.toLocaleString('zh-CN', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
         }
 
         function escapeHtml(t) {
@@ -577,18 +511,12 @@
 
         function formatTime(iso) {
             if (!iso) return '';
-            return new Date(iso).toLocaleString(currentLang, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+            return new Date(iso).toLocaleString('zh-CN', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
         }
 
-        document.getElementById('langSelect').addEventListener('change', e => {
-            currentLang = e.target.value;
-            loadData();
-        });
-
         // 启动
-        initMap();
         loadData();
-        setInterval(loadData, 600000);
+        setInterval(loadData, 300000); // 5 分钟刷新
     </script>
 </body>
 </html>
