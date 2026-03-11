@@ -4,87 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WorldWatch 天眼 - 全球动态监控指挥中心</title>
+    <!-- 使用国内可访问的 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/map/js/world.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
             background: linear-gradient(135deg, #0c1929 0%, #1a2a4a 100%);
             color: #e0e6ed;
             min-height: 100vh;
-            overflow-x: hidden;
         }
-
-        /* 顶部导航 */
         .header {
             background: rgba(12, 25, 41, 0.95);
             border-bottom: 1px solid #1e3a5f;
             padding: 0 20px;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             z-index: 1000;
             height: 60px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            font-size: 28px;
-        }
-
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { font-size: 28px; }
         .logo-text {
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 20px; font-weight: bold;
             background: linear-gradient(90deg, #00d9ff, #00ff88);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
+        .header-controls { display: flex; align-items: center; gap: 20px; }
         .status-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            display: flex; align-items: center; gap: 8px;
             padding: 6px 12px;
             background: rgba(0, 255, 136, 0.1);
             border: 1px solid #00ff88;
             border-radius: 20px;
             font-size: 12px;
         }
-
         .status-dot {
-            width: 8px;
-            height: 8px;
+            width: 8px; height: 8px;
             background: #00ff88;
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .lang-select {
             background: rgba(30, 58, 95, 0.5);
             border: 1px solid #1e3a5f;
@@ -94,102 +59,63 @@
             cursor: pointer;
             font-size: 13px;
         }
-
-        .time-display {
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            color: #00d9ff;
-        }
-
-        /* 主容器 */
+        .time-display { font-family: 'Courier New', monospace; font-size: 14px; color: #00d9ff; }
+        
         .main-container {
             display: grid;
-            grid-template-columns: 280px 1fr 320px;
+            grid-template-columns: 260px 1fr 300px;
             gap: 20px;
             padding: 80px 20px 20px;
             min-height: 100vh;
         }
-
-        /* 通用面板样式 */
+        
         .panel {
             background: rgba(18, 32, 53, 0.8);
             border: 1px solid #1e3a5f;
             border-radius: 12px;
             overflow: hidden;
+            margin-bottom: 20px;
         }
-
         .panel-header {
             background: linear-gradient(90deg, rgba(30, 58, 95, 0.8), rgba(18, 32, 53, 0.8));
             padding: 12px 16px;
             border-bottom: 1px solid #1e3a5f;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 14px; font-weight: 600;
+            display: flex; justify-content: space-between; align-items: center;
         }
-
-        .panel-content {
-            padding: 16px;
+        .panel-content { padding: 16px; }
+        
+        .left-panel, .right-panel { display: flex; flex-direction: column; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
         }
-
-        /* 左侧面板 */
-        .left-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
         .stats-card {
             background: linear-gradient(135deg, rgba(30, 58, 95, 0.5), rgba(18, 32, 53, 0.5));
             border-radius: 10px;
-            padding: 16px;
+            padding: 20px;
             text-align: center;
         }
-
         .stat-value {
-            font-size: 32px;
-            font-weight: bold;
+            font-size: 36px; font-weight: bold;
             background: linear-gradient(90deg, #00d9ff, #00ff88);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-
-        .stat-label {
-            font-size: 12px;
-            color: #8899ac;
-            margin-top: 4px;
-        }
-
-        .region-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
+        .stat-label { font-size: 12px; color: #8899ac; margin-top: 6px; }
+        
+        .region-list { max-height: 350px; overflow-y: auto; }
         .region-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
             padding: 10px 12px;
             border-bottom: 1px solid rgba(30, 58, 95, 0.5);
             cursor: pointer;
-            transition: background 0.2s;
         }
-
-        .region-item:hover {
-            background: rgba(30, 58, 95, 0.3);
-        }
-
-        .region-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .region-flag {
-            font-size: 16px;
-        }
-
+        .region-item:hover { background: rgba(30, 58, 95, 0.3); }
+        .region-name { display: flex; align-items: center; gap: 8px; }
+        .region-flag { font-size: 16px; }
         .region-count {
             background: rgba(0, 217, 255, 0.2);
             color: #00d9ff;
@@ -197,167 +123,134 @@
             border-radius: 10px;
             font-size: 12px;
         }
-
-        /* 中间地图区域 */
-        .center-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
+        
+        .center-panel { display: flex; flex-direction: column; gap: 20px; }
+        
         .map-container {
-            flex: 1;
-            min-height: 500px;
+            height: 450px;
+            background: rgba(18, 32, 53, 0.5);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
-
-        #worldMap {
-            width: 100%;
-            height: 100%;
-            min-height: 500px;
+        #worldMap { width: 100%; height: 100%; }
+        .map-placeholder {
+            text-align: center;
+            color: #8899ac;
         }
-
-        .events-feed {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
+        .map-placeholder .icon { font-size: 64px; margin-bottom: 16px; }
+        
+        .events-feed { max-height: 400px; overflow-y: auto; }
         .event-item {
             background: rgba(30, 58, 95, 0.3);
             border-left: 3px solid #00d9ff;
-            padding: 12px;
+            padding: 14px;
             margin-bottom: 10px;
             border-radius: 0 8px 8px 0;
             cursor: pointer;
             transition: all 0.2s;
         }
-
         .event-item:hover {
             background: rgba(30, 58, 95, 0.5);
             transform: translateX(5px);
         }
-
         .event-item.critical { border-left-color: #ff4757; }
         .event-item.high { border-left-color: #ffa502; }
         .event-item.medium { border-left-color: #ffdd59; }
         .event-item.low { border-left-color: #00d9ff; }
-
-        .event-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            line-height: 1.4;
+        .event-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+        .event-meta { display: flex; gap: 12px; font-size: 11px; color: #8899ac; flex-wrap: wrap; }
+        .event-source { color: #00d9ff; }
+        
+        .category-list { }
+        .category-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(30, 58, 95, 0.5);
         }
-
-        .event-meta {
-            display: flex;
-            gap: 12px;
-            font-size: 11px;
-            color: #8899ac;
+        .category-name { display: flex; align-items: center; gap: 8px; }
+        .category-icon { font-size: 16px; }
+        .category-bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(30, 58, 95, 0.5);
+            border-radius: 3px;
+            margin: 0 12px;
+            overflow: hidden;
         }
-
-        .event-source {
-            color: #00d9ff;
+        .category-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            border-radius: 3px;
         }
-
-        /* 右侧面板 */
-        .right-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .category-chart {
-            height: 200px;
-        }
-
-        .alert-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
+        .category-count { font-size: 12px; color: #00d9ff; min-width: 30px; text-align: right; }
+        
+        .alert-list { max-height: 300px; overflow-y: auto; }
         .alert-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
+            display: flex; align-items: flex-start; gap: 10px;
             padding: 10px;
             background: rgba(255, 71, 87, 0.1);
             border: 1px solid rgba(255, 71, 87, 0.3);
             border-radius: 8px;
             margin-bottom: 8px;
         }
-
-        .alert-icon {
-            font-size: 18px;
+        .alert-icon { font-size: 18px; }
+        .alert-content { flex: 1; }
+        .alert-title { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+        .alert-time { font-size: 10px; color: #8899ac; }
+        
+        .data-sources { font-size: 12px; color: #8899ac; line-height: 2; }
+        
+        .refresh-btn {
+            background: rgba(0,217,255,0.2);
+            border: 1px solid #00d9ff;
+            color: #00d9ff;
+            padding: 6px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
         }
-
-        .alert-content {
-            flex: 1;
-        }
-
-        .alert-title {
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .alert-time {
-            font-size: 10px;
-            color: #8899ac;
-        }
-
-        /* 滚动条样式 */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(18, 32, 53, 0.5);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #1e3a5f;
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #2a4a6f;
-        }
-
-        /* 加载动画 */
+        .refresh-btn:hover { background: rgba(0,217,255,0.3); }
+        
         .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 200px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 40px 20px;
             color: #8899ac;
         }
-
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 32px; height: 32px;
             border: 3px solid rgba(0, 217, 255, 0.2);
             border-top-color: #00d9ff;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+            margin-right: 12px;
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(18, 32, 53, 0.5); }
+        ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 3px; }
+        
+        .update-time {
+            text-align: center;
+            font-size: 11px;
+            color: #8899ac;
+            padding: 10px;
+            border-top: 1px solid rgba(30, 58, 95, 0.5);
         }
-
-        /* 响应式 */
-        @media (max-width: 1400px) {
+        
+        @media (max-width: 1200px) {
             .main-container {
                 grid-template-columns: 1fr;
             }
-            .left-panel, .right-panel {
-                display: none;
-            }
+            .left-panel, .right-panel { display: none; }
         }
     </style>
 </head>
 <body>
-    <!-- 顶部导航 -->
     <header class="header">
         <div class="logo">
             <span class="logo-icon">🌍</span>
@@ -372,95 +265,93 @@
                 <option value="zh-CN">简体中文</option>
                 <option value="zh-TW">繁體中文</option>
                 <option value="en">English</option>
-                <option value="ja">日本語</option>
-                <option value="ko">한국어</option>
             </select>
             <div class="time-display" id="timeDisplay">--:--:--</div>
         </div>
     </header>
 
-    <!-- 主容器 -->
     <div class="main-container">
-        <!-- 左侧面板 -->
+        <!-- 左侧 -->
         <div class="left-panel">
             <div class="panel">
-                <div class="panel-header">
-                    <span>📊 统计概览</span>
-                </div>
+                <div class="panel-header">📊 统计概览</div>
                 <div class="panel-content">
-                    <div class="stats-card">
-                        <div class="stat-value" id="totalEvents">-</div>
-                        <div class="stat-label">总事件数</div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                    <div class="stats-grid">
+                        <div class="stats-card">
+                            <div class="stat-value" id="totalEvents">-</div>
+                            <div class="stat-label">总事件</div>
+                        </div>
                         <div class="stats-card">
                             <div class="stat-value" id="alertCount">-</div>
-                            <div class="stat-label">告警事件</div>
+                            <div class="stat-label">告警</div>
                         </div>
                         <div class="stats-card">
                             <div class="stat-value" id="regionCount">-</div>
-                            <div class="stat-label">覆盖地区</div>
+                            <div class="stat-label">地区</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="panel">
-                <div class="panel-header">
-                    <span>🌏 地区分布</span>
-                </div>
+                <div class="panel-header">🌏 地区分布</div>
                 <div class="panel-content">
                     <div class="region-list" id="regionList">
                         <div class="loading">
                             <div class="spinner"></div>
+                            <span>加载中...</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 中间面板 -->
+        <!-- 中间 -->
         <div class="center-panel">
             <div class="panel">
                 <div class="panel-header">
-                    <span>🗺️ 全球监控地图</span>
-                    <button onclick="refreshData()" style="background: rgba(0,217,255,0.2); border: 1px solid #00d9ff; color: #00d9ff; padding: 4px 12px; border-radius: 4px; cursor: pointer;">🔄 刷新</button>
+                    <span>🗺️ 全球监控</span>
+                    <button class="refresh-btn" onclick="refreshData()">🔄 刷新</button>
                 </div>
                 <div class="panel-content">
-                    <div id="worldMap" class="map-container"></div>
+                    <div class="map-container">
+                        <div id="worldMap"></div>
+                        <div class="map-placeholder" id="mapPlaceholder">
+                            <div class="icon">🌐</div>
+                            <div>地图加载中...</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="panel">
-                <div class="panel-header">
-                    <span>🔥 实时事件流</span>
-                </div>
+                <div class="panel-header">🔥 实时事件流</div>
                 <div class="panel-content">
                     <div class="events-feed" id="eventsFeed">
                         <div class="loading">
                             <div class="spinner"></div>
-                            <span style="margin-left: 10px;">正在加载全球动态数据...</span>
+                            <span>正在加载全球动态...</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 右侧面板 -->
+        <!-- 右侧 -->
         <div class="right-panel">
             <div class="panel">
-                <div class="panel-header">
-                    <span>📈 事件分类</span>
-                </div>
+                <div class="panel-header">📈 事件分类</div>
                 <div class="panel-content">
-                    <div id="categoryChart" class="category-chart"></div>
+                    <div class="category-list" id="categoryList">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="panel">
-                <div class="panel-header">
-                    <span>⚠️ 告警列表</span>
-                </div>
+                <div class="panel-header">⚠️ 告警列表</div>
                 <div class="panel-content">
                     <div class="alert-list" id="alertList">
                         <div class="loading">
@@ -471,288 +362,233 @@
             </div>
 
             <div class="panel">
-                <div class="panel-header">
-                    <span>ℹ️ 数据源</span>
-                </div>
-                <div class="panel-content" style="font-size: 12px; color: #8899ac; line-height: 1.8;">
-                    <div>📰 BBC World News</div>
-                    <div>📰 CNN International</div>
-                    <div>📰 Reuters</div>
-                    <div>📰 Al Jazeera</div>
-                    <div>💬 Reddit r/worldnews</div>
-                    <div>💬 Reddit r/news</div>
-                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(30,58,95,0.5);">
-                        🕐 更新频率：10 分钟
+                <div class="panel-header">ℹ️ 数据源</div>
+                <div class="panel-content">
+                    <div class="data-sources">
+                        <div>📰 BBC World</div>
+                        <div>📰 CNN</div>
+                        <div>📰 Reuters</div>
+                        <div>📰 The Verge</div>
+                        <div>💬 Reddit</div>
+                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(30,58,95,0.5);">
+                            🕐 10 分钟更新
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div class="update-time" id="updateTime"></div>
         </div>
     </div>
 
     <script>
-        // 多语言配置
-        const i18n = {
-            'zh-CN': {
-                totalEvents: '总事件数',
-                alertEvents: '告警事件',
-                regions: '覆盖地区',
-                loading: '正在加载全球动态数据...'
-            },
-            'en': {
-                totalEvents: 'Total Events',
-                alertEvents: 'Alert Events',
-                regions: 'Regions',
-                loading: 'Loading global events...'
-            }
-        };
-
         let currentLang = 'zh-CN';
         let worldMap = null;
-        let categoryChart = null;
+        let dataCache = null;
 
-        // 更新时间
+        // 时间更新
         function updateTime() {
             const now = new Date();
-            document.getElementById('timeDisplay').textContent = now.toLocaleTimeString('zh-CN', { hour12: false });
+            document.getElementById('timeDisplay').textContent = now.toLocaleTimeString('zh-CN', {hour12: false});
         }
         setInterval(updateTime, 1000);
         updateTime();
 
-        // 初始化地图
+        // 初始化地图（简化版）
         function initMap() {
-            worldMap = echarts.init(document.getElementById('worldMap'));
-            const option = {
-                backgroundColor: 'transparent',
-                geo: {
-                    map: 'world',
-                    roam: true,
-                    zoom: 1.2,
-                    label: { show: false },
-                    itemStyle: {
-                        areaColor: '#1a2a4a',
-                        borderColor: '#2a4a6f',
-                        borderWidth: 1
-                    },
-                    emphasis: {
+            try {
+                worldMap = echarts.init(document.getElementById('worldMap'));
+                const option = {
+                    backgroundColor: 'transparent',
+                    geo: {
+                        map: 'world',
+                        roam: true,
+                        zoom: 1.2,
+                        label: {show: false},
                         itemStyle: {
-                            areaColor: '#2a4a6f'
-                        }
-                    }
-                },
-                series: [{
-                    type: 'scatter',
-                    coordinateSystem: 'geo',
-                    symbolSize: 10,
-                    itemStyle: {
-                        color: '#00d9ff'
-                    }
-                }]
-            };
-            worldMap.setOption(option);
-            window.addEventListener('resize', () => worldMap.resize());
-        }
-
-        // 初始化分类图表
-        function initCategoryChart() {
-            categoryChart = echarts.init(document.getElementById('categoryChart'));
-            const option = {
-                backgroundColor: 'transparent',
-                tooltip: { trigger: 'item' },
-                series: [{
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    itemStyle: {
-                        borderRadius: 5,
-                        borderColor: '#1a2a4a',
-                        borderWidth: 2
+                            areaColor: '#1a2a4a',
+                            borderColor: '#2a4a6f',
+                            borderWidth: 1
+                        },
+                        emphasis: {itemStyle: {areaColor: '#2a4a6f'}}
                     },
-                    label: { show: false },
-                    data: []
-                }]
-            };
-            categoryChart.setOption(option);
-            window.addEventListener('resize', () => categoryChart.resize());
+                    series: [{
+                        type: 'scatter',
+                        coordinateSystem: 'geo',
+                        symbolSize: 8,
+                        itemStyle: {color: '#00d9ff'}
+                    }]
+                };
+                worldMap.setOption(option);
+                document.getElementById('mapPlaceholder').style.display = 'none';
+                
+                // 异步加载世界地图
+                fetch('https://cdn.jsdelivr.net/npm/echarts@5.4.3/map/json/world.json')
+                    .then(r => r.json())
+                    .then(worldJson => {
+                        echarts.registerMap('world', worldJson);
+                        worldMap.setOption(option);
+                        document.getElementById('mapPlaceholder').style.display = 'none';
+                    })
+                    .catch(() => {
+                        document.getElementById('mapPlaceholder').innerHTML = '<div class="icon">🌐</div><div>地图加载失败</div>';
+                    });
+            } catch(e) {
+                console.log('地图初始化失败', e);
+            }
         }
 
         // 加载数据
         async function loadData() {
             try {
-                const [eventsRes, statsRes] = await Promise.all([
-                    fetch('/api/v1/events/list?limit=50'),
-                    fetch('/api/v1/events/stats/overview')
-                ]);
-
-                const eventsData = await eventsRes.json();
-                const statsData = await statsRes.json();
-
-                updateStats(statsData.data);
-                updateEventsFeed(eventsData.data);
-                updateRegionList(statsData.data.by_region);
-                updateCategoryChart(statsData.data.by_category);
-                updateAlertList(eventsData.data.filter(e => e.is_alert));
-                updateMapMarkers(eventsData.data);
-
-            } catch (error) {
-                console.error('加载数据失败:', error);
+                const res = await fetch('/api/v1/events/list?limit=50');
+                const result = await res.json();
+                dataCache = result;
+                
+                updateStats(result.data);
+                updateEventsFeed(result.data);
+                updateRegionList(result.data);
+                updateCategoryList(result.data);
+                updateAlertList(result.data);
+                updateMapMarkers(result.data);
+                updateUpdateTime(result.last_update);
+            } catch(error) {
+                console.error('加载失败:', error);
+                document.getElementById('eventsFeed').innerHTML = '<div class="loading">数据加载失败，请刷新重试</div>';
             }
         }
 
-        // 更新统计
-        function updateStats(stats) {
-            document.getElementById('totalEvents').textContent = stats.total_events || 0;
-            document.getElementById('alertCount').textContent = stats.alert_events || 0;
-            document.getElementById('regionCount').textContent = Object.keys(stats.by_region || {}).length;
+        function updateStats(events) {
+            const regions = new Set(events.map(e => e.region));
+            const alerts = events.filter(e => e.is_alert).length;
+            document.getElementById('totalEvents').textContent = events.length;
+            document.getElementById('alertCount').textContent = alerts;
+            document.getElementById('regionCount').textContent = regions.size;
         }
 
-        // 更新事件流
         function updateEventsFeed(events) {
             const container = document.getElementById('eventsFeed');
             if (!events || events.length === 0) {
-                container.innerHTML = '<div class="loading">暂无事件数据</div>';
+                container.innerHTML = '<div class="loading">暂无数据</div>';
                 return;
             }
-
-            container.innerHTML = events.map(event => `
-                <div class="event-item ${event.severity}" onclick="showEventDetail('${event.title}')">
-                    <div class="event-title">${escapeHtml(event.title)}</div>
+            container.innerHTML = events.slice(0, 20).map(e => `
+                <div class="event-item ${e.severity}">
+                    <div class="event-title">${escapeHtml(e.title)}</div>
                     <div class="event-meta">
-                        <span class="event-source">📰 ${escapeHtml(event.source)}</span>
-                        <span>🌏 ${escapeHtml(event.region)}</span>
-                        <span>🕐 ${formatTime(event.publish_time)}</span>
+                        <span class="event-source">📰 ${escapeHtml(e.source)}</span>
+                        <span>🌏 ${escapeHtml(e.region)}</span>
+                        <span>🕐 ${formatTime(e.publish_time)}</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        // 更新地区列表
-        function updateRegionList(regions) {
+        function updateRegionList(events) {
+            const regionCount = {};
+            events.forEach(e => { regionCount[e.region] = (regionCount[e.region] || 0) + 1; });
             const container = document.getElementById('regionList');
-            if (!regions || regions.length === 0) {
-                container.innerHTML = '<div class="loading">暂无地区数据</div>';
-                return;
-            }
-
-            const flags = {
-                '全球': '🌍', '北美': '🇺🇸', '欧洲': '🇪🇺', '亚洲': '🌏',
-                '中东': '🕌', '非洲': '🌍', '南美': '🌎', '大洋洲': '🌏'
-            };
-
-            container.innerHTML = regions.map(r => `
+            const flags = {'全球':'🌍','北美':'🇺🇸','欧洲':'🇪','亚洲':'🌏','中东':'🕌','非洲':'🌍','南美':'🌎','大洋洲':'🌏'};
+            container.innerHTML = Object.entries(regionCount).map(([r, c]) => `
                 <div class="region-item">
                     <div class="region-name">
-                        <span class="region-flag">${flags[r.region] || '🌐'}</span>
-                        <span>${escapeHtml(r.region)}</span>
+                        <span class="region-flag">${flags[r]||'🌐'}</span>
+                        <span>${escapeHtml(r)}</span>
                     </div>
-                    <div class="region-count">${r.count}</div>
+                    <div class="region-count">${c}</div>
                 </div>
             `).join('');
         }
 
-        // 更新分类图表
-        function updateCategoryChart(categories) {
-            if (!categoryChart || !categories) return;
-            const colors = ['#00d9ff', '#00ff88', '#ffdd59', '#ffa502', '#ff4757', '#a55eea'];
-            categoryChart.setOption({
-                series: [{
-                    data: categories.map((c, i) => ({
-                        name: c.category,
-                        value: c.count,
-                        itemStyle: { color: colors[i % colors.length] }
-                    }))
-                }]
-            });
+        function updateCategoryList(events) {
+            const catCount = {};
+            events.forEach(e => { catCount[e.category] = (catCount[e.category] || 0) + 1; });
+            const container = document.getElementById('categoryList');
+            const icons = {'新闻':'📰','科技':'💻','经济':'💰','政治':'🏛️','环境':'🌍','科学':'🔬'};
+            const max = Math.max(...Object.values(catCount), 1);
+            container.innerHTML = Object.entries(catCount).map(([c, n]) => `
+                <div class="category-item">
+                    <div class="category-name">
+                        <span class="category-icon">${icons[c]||'📌'}</span>
+                        <span>${escapeHtml(c)}</span>
+                    </div>
+                    <div class="category-bar">
+                        <div class="category-fill" style="width:${(n/max)*100}%"></div>
+                    </div>
+                    <div class="category-count">${n}</div>
+                </div>
+            `).join('');
         }
 
-        // 更新告警列表
-        function updateAlertList(alerts) {
+        function updateAlertList(events) {
+            const alerts = events.filter(e => e.is_alert).slice(0, 5);
             const container = document.getElementById('alertList');
-            if (!alerts || alerts.length === 0) {
-                container.innerHTML = '<div class="loading" style="height: 100px;">暂无告警</div>';
+            if (alerts.length === 0) {
+                container.innerHTML = '<div class="loading" style="padding:20px;">暂无告警</div>';
                 return;
             }
-
-            container.innerHTML = alerts.slice(0, 10).map(alert => `
+            container.innerHTML = alerts.map(a => `
                 <div class="alert-item">
                     <span class="alert-icon">⚠️</span>
                     <div class="alert-content">
-                        <div class="alert-title">${escapeHtml(alert.title)}</div>
-                        <div class="alert-time">${formatTime(alert.publish_time)}</div>
+                        <div class="alert-title">${escapeHtml(a.title)}</div>
+                        <div class="alert-time">${formatTime(a.publish_time)}</div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // 更新地图标记
         function updateMapMarkers(events) {
-            if (!worldMap || !events) return;
-            const regionCoords = {
-                '全球': [0, 20], '北美': [-100, 45], '欧洲': [10, 50],
-                '亚洲': [100, 35], '中东': [50, 30], '非洲': [20, 0],
-                '南美': [-60, -15], '大洋洲': [140, -25]
-            };
-
-            const data = events
-                .filter(e => regionCoords[e.region])
-                .map(e => ({
-                    name: e.region,
-                    value: [...regionCoords[e.region], e.heat_score || 50]
-                }));
-
+            if (!worldMap) return;
+            const coords = {'全球':[0,20],'北美':[-100,45],'欧洲':[10,50],'亚洲':[100,35],'中东':[50,30],'非洲':[20,0],'南美':[-60,-15],'大洋洲':[140,-25]};
+            const data = events.filter(e => coords[e.region]).map(e => ({
+                name: e.region,
+                value: [...coords[e.region], e.heat_score||50]
+            }));
             worldMap.setOption({
                 series: [{
                     type: 'effectScatter',
                     coordinateSystem: 'geo',
                     data: data,
-                    symbolSize: 15,
-                    showEffectOn: 'render',
-                    rippleEffect: { brushType: 'stroke', scale: 3 },
+                    symbolSize: 12,
+                    rippleEffect: {brushType: 'stroke', scale: 2},
                     itemStyle: {
-                        color: function(params) {
-                            return params.value[2] > 80 ? '#ff4757' :
-                                   params.value[2] > 50 ? '#ffa502' : '#00d9ff';
-                        }
+                        color: p => p.value[2] > 80 ? '#ff4757' : p.value[2] > 50 ? '#ffa502' : '#00d9ff'
                     }
                 }]
             });
         }
 
-        // 刷新数据
+        function updateUpdateTime(isoTime) {
+            if (!isoTime) return;
+            const date = new Date(isoTime);
+            document.getElementById('updateTime').textContent = '最后更新：' + date.toLocaleString('zh-CN');
+        }
+
         function refreshData() {
             loadData();
         }
 
-        // 显示事件详情
-        function showEventDetail(title) {
-            alert('事件详情：' + title);
+        function escapeHtml(t) {
+            const d = document.createElement('div');
+            d.textContent = t;
+            return d.innerHTML;
         }
 
-        // 工具函数
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        function formatTime(iso) {
+            if (!iso) return '';
+            return new Date(iso).toLocaleString(currentLang, {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
         }
 
-        function formatTime(isoString) {
-            if (!isoString) return '';
-            const date = new Date(isoString);
-            return date.toLocaleString(currentLang, {
-                month: 'short', day: 'numeric',
-                hour: '2-digit', minute: '2-digit'
-            });
-        }
-
-        // 语言切换
-        document.getElementById('langSelect').addEventListener('change', (e) => {
+        document.getElementById('langSelect').addEventListener('change', e => {
             currentLang = e.target.value;
             loadData();
         });
 
-        // 初始化
+        // 启动
         initMap();
-        initCategoryChart();
         loadData();
-        setInterval(loadData, 600000); // 10 分钟自动刷新
+        setInterval(loadData, 600000);
     </script>
 </body>
 </html>

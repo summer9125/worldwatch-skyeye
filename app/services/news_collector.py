@@ -19,24 +19,15 @@ class GlobalNewsCollector:
             }
         )
         
-        # RSS 新闻源列表（免费）
+        # RSS 新闻源列表（优化：包含国内可访问源）
         self.rss_feeds = [
-            # 国际新闻
-            {"name": "BBC World", "url": "http://feeds.bbci.co.uk/news/world/rss.xml", "region": "全球"},
-            {"name": "CNN World", "url": "http://rss.cnn.com/rss/edition_world.rss", "region": "全球"},
-            {"name": "Reuters World", "url": "https://www.reutersagency.com/feed/", "region": "全球"},
-            {"name": "Al Jazeera", "url": "https://www.aljazeera.com/xml/rss/all.xml", "region": "中东"},
+            # 国内可访问（速度快）
+            {"name": "IT 之家", "url": "https://www.ithome.com/rss/", "region": "亚洲"},
+            {"name": "36Kr", "url": "https://36kr.com/feed", "region": "亚洲"},
             
-            # 科技
-            {"name": "TechCrunch", "url": "https://techcrunch.com/feed/", "region": "北美"},
+            # 国际新闻（可能慢但重要）
             {"name": "The Verge", "url": "https://www.theverge.com/rss/index.xml", "region": "北美"},
-            
-            # 亚洲
-            {"name": "NHK World", "url": "https://www3.nhk.or.jp/nhkworld/en/news/rss/", "region": "亚洲"},
-            {"name": "CNA Taiwan", "url": "https://www.cna.com.tw/list/aall.aspx", "region": "亚洲"},
-            
-            # 欧洲
-            {"name": "Euronews", "url": "https://www.euronews.com/rss", "region": "欧洲"},
+            {"name": "TechCrunch", "url": "https://techcrunch.com/feed/", "region": "北美"},
         ]
         
         # Reddit API（免费，无需 Key）

@@ -13,7 +13,7 @@ router = APIRouter()
 # 内存缓存（简化版，生产环境用 Redis）
 _cached_events = []
 _last_update = None
-CACHE_DURATION = timedelta(minutes=10)  # 10 分钟更新一次
+CACHE_DURATION = timedelta(minutes=5)  # 5 分钟更新一次（更快）
 
 
 async def get_fresh_events():
