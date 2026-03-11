@@ -7,3 +7,5 @@ httpx==0.25.2
 beautifulsoup4==4.12.2
 lxml==4.9.3
 sqlalchemy==2.0.23
+feedparser==6.0.10
+aiohttp==3.9.1
